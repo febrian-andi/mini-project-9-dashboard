@@ -13,7 +13,6 @@ export const usePostData = (url) => {
       setLoading(true);
       const response = await axios.post(`${API_URL}${url}`, data, {
         headers: {
-          "Content-Type": "multipart/form-data",
           "Authorization": `Bearer ${token}`,
         },
       });
@@ -35,5 +34,3 @@ export const usePostData = (url) => {
 
   return { postData, loading };
 };
-
-export default usePostData;

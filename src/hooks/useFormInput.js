@@ -7,13 +7,11 @@ export const useFormInput = (initialValues = {}, validate = null) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
 
-    // Perbarui nilai
     setValues((prevValues) => ({
       ...prevValues,
       [name]: value,
     }));
 
-    // Jalankan validasi jika ada
     if (validate) {
       const error = validate(name, value);
       setErrors((prevErrors) => ({
@@ -28,5 +26,5 @@ export const useFormInput = (initialValues = {}, validate = null) => {
     setErrors({});
   };
 
-  return { values, errors, handleChange, resetForm };
+  return { values, errors, handleChange, resetForm, setValues };
 };

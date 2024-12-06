@@ -7,8 +7,9 @@ import {
   PhotoIcon,
   Bars3Icon,
   XMarkIcon,
+  ArrowLeftEndOnRectangleIcon,
 } from "@heroicons/react/24/solid";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/auth/authSlice";
 
 const Navbar = () => {
@@ -19,6 +20,7 @@ const Navbar = () => {
     setIsOpen(!isOpen);
   };
 
+  const { loading } = useSelector((state) => state.auth);
   const handleLogout = () => {
     dispatch(logout());
   };
@@ -92,23 +94,14 @@ const Navbar = () => {
 
           <button
             onClick={handleLogout}
-            className="flex items-center p-3 hover:bg-red-700 rounded-lg mt-4 text-red-400 hover:text-white w-full"
+            className={`flex items-center p-3 hover:bg-red-700 rounded-lg mt-4 text-red-400 hover:text-white w-full ${
+              loading && "cursor-not-allowed opacity-50 bg-red-700"
+            }`}
           >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6 mr-3"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
-              />
-            </svg>
-            Logout
+            <ArrowLeftEndOnRectangleIcon className="w-8 h-8 mr-2" />
+            {loading ? (
+              <div className="w-5 h-5 mx-auto border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : "Logout"}
           </button>
         </nav>
       </div>

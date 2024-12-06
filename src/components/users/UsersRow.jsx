@@ -1,7 +1,9 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { TrashIcon, PencilIcon } from "@heroicons/react/24/outline";
 import { useDeleteData } from "../../hooks/useDeleteData";
 import { useFetchData } from "../../hooks/useFetchData";
+import Swal from "sweetalert2";
 
 function UsersRow({ user, index }) {
   const { refetch } = useFetchData("/users");
@@ -11,6 +13,13 @@ function UsersRow({ user, index }) {
     deleteData(user.id, refetch);
   };
 
+  const handleUpdate = () => {
+    Swal.fire({
+      title: "Coming Soon!",
+      icon: "info",
+    });
+  };
+
   return (
     <tr className="border-b border-gray-200 hover:bg-gray-100">
       <td className="py-3 px-6 text-left whitespace-nowrap">{index + 1}</td>
@@ -18,7 +27,7 @@ function UsersRow({ user, index }) {
       <td className="py-3 px-6 text-left">{user.email}</td>
       <td className="py-3 px-6 text-center">
         <div className="flex item-center justify-center gap-x-4">
-          <button className="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
+          <button onClick={handleUpdate} className="w-4 mr-2 transform hover:text-purple-500 hover:scale-110">
             <PencilIcon className="w-6 h-6" />
           </button>
           <button 

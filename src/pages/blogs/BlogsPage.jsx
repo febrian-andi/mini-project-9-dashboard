@@ -1,6 +1,6 @@
 import React from "react";
-import BlogsList from "../components/blogs/BlogsList";
-import Layout from "../components/Layout";
+import BlogsList from "../../components/blogs/BlogsList";
+import Layout from "../../components/Layout";
 
 function BlogsPage() {
   return (

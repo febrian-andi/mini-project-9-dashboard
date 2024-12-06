@@ -3,34 +3,42 @@ import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_BASE_URL;
 
-export const login = createAsyncThunk("auth/login", async (loginForm, thunkAPI) => {
-  try {
-    const response = await axios.post(`${API_URL}/auth/login`, {
-      headers: { "Content-Type": "application/json" },
-      email: loginForm.email,
-      password: loginForm.password,
-      rememberMe: loginForm.rememberMe,
-    });
-    return response.data;
-  } catch (error) {
-    console.log(error.response.data)
-    return thunkAPI.rejectWithValue(
-      error.response?.data?.message
-    );
+export const login = createAsyncThunk(
+  "auth/login",
+  async (loginForm, thunkAPI) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/auth/login`,
+        {
+          email: loginForm.email,
+          password: loginForm.password,
+          remember_me: loginForm.remember_me,
+        },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error.response.data);
+      return thunkAPI.rejectWithValue(error.response?.data?.message);
+    }
   }
-});
+);
 
 export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
   const { token } = thunkAPI.getState().auth;
   try {
-    const response = await axios.post(`${API_URL}/auth/logout`, {}, {
-      headers: { "Authorization": `Bearer ${token}` },
-    });
+    const response = await axios.post(
+      `${API_URL}/auth/logout`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
     return response.data;
   } catch (error) {
-    return thunkAPI.rejectWithValue(
-      error.response?.data?.message
-    );
+    return thunkAPI.rejectWithValue(error.response?.data?.message);
   }
 });
 
@@ -40,6 +48,8 @@ const initialState = {
   loading: false,
   error: null,
   isSuccess: false,
+  expiry: null,
+  isLoggingOut: false
 };
 
 const authSlice = createSlice({
@@ -59,19 +69,36 @@ const authSlice = createSlice({
         state.loading = false;
         state.isSuccess = true;
         state.token = action.payload.token;
+        const now = Date.now();
+        const expiryDuration = action.payload.remember_me
+          ? 7 * 24 * 60 * 60 * 1000
+          : 1 * 60 * 60 * 1000;
+        state.expiry = now + expiryDuration;
       })
       .addCase(login.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || "Something went wrong";
+        state.error = action.payload || "Something went wrong 11";
       })
+      .addCase(logout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isSuccess = false;
+        state.isLoggingOut = true;
+      })
+      // extraReducers for refreshToken
       .addCase(logout.fulfilled, (state) => {
         state.token = null;
         state.user = null;
+        state.expiry = null;
+        state.loading = false;
+        state.isSuccess = true;
+        state.isLoggingOut = false;
       })
       .addCase(logout.rejected, (state, action) => {
         state.error = action.payload || "Logout failed";
+        state.loading = false;
+        state.isLoggingOut = false;
       });
-
   },
 });
 

@@ -9,22 +9,31 @@ import {
 import { useSelector } from "react-redux";
 import Navbar from "./components/Navbar";
 import LoginPage from "./pages/LoginPage";
-import UsersPage from "./pages/users/UsersPage";
-import AddUsersPage from "./pages/users/AddUsersPage";
-import BlogsPage from "./pages/BlogsPage";
-import PortfolioPage from "./pages/PortfolioPage";
 import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import useTokenManager from "./hooks/UseTokenManager";
+
+import UsersPage from "./pages/users/UsersPage";
+import AddUsersPage from "./pages/users/AddUsersPage";
+import EditUserPage from "./pages/users/EditUsersPage";
+
+import BlogsPage from "./pages/blogs/BlogsPage";
+
+import PortfolioPage from "./pages/portfolio/PortfolioPage";
+import AddPortfolioPage from "./pages/portfolio/AddPortfolioPage";
+import EditPortfolioPage from "./pages/portfolio/EditPortfolioPage";
+import PortfolioDetailPage from "./pages/portfolio/PortfolioDetailPage";
+import AddBlogsPage from "./pages/blogs/AddBlogsPage";
+import EditBlogsPage from "./pages/blogs/EditBlogsPage";
+import TestimoniPage from "./pages/testimoni/TestimoniPage";
+import BlogsDetailPage from "./pages/blogs/BlogsDetailPage";
 
 function AppComponent() {
+  useTokenManager();
+
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const { token } = useSelector((state) => state.auth);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!token);
-
-  useEffect(() => {
-    setIsAuthenticated(!!token);
-  }, [token]);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -40,7 +49,7 @@ function AppComponent() {
           <Route
             path="/login"
             element={
-              isAuthenticated ? (
+              token ? (
                 <Navigate to="/" replace />
               ) : (
                 <LoginPage />
@@ -52,7 +61,7 @@ function AppComponent() {
           <Route
             path="/"
             element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProtectedRoute >
                 <HomePage />
               </ProtectedRoute>
             }
@@ -62,7 +71,7 @@ function AppComponent() {
           <Route
             path="/users"
             element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProtectedRoute >
                 <UsersPage />
               </ProtectedRoute>
             }
@@ -70,8 +79,16 @@ function AppComponent() {
           <Route
             path="/users/add"
             element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProtectedRoute >
                 <AddUsersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users/edit/:id"
+            element={
+              <ProtectedRoute >
+                <EditUserPage />
               </ProtectedRoute>
             }
           />
@@ -80,8 +97,32 @@ function AppComponent() {
           <Route
             path="/blogs"
             element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProtectedRoute >
                 <BlogsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/blogs/add"
+            element={
+              <ProtectedRoute >
+                <AddBlogsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/blogs/edit/:id"
+            element={
+              <ProtectedRoute >
+                <EditBlogsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/blogs/:id"
+            element={
+              <ProtectedRoute >
+                <BlogsDetailPage />
               </ProtectedRoute>
             }
           />
@@ -90,8 +131,42 @@ function AppComponent() {
           <Route
             path="/portfolio"
             element={
-              <ProtectedRoute isAuthenticated={isAuthenticated}>
+              <ProtectedRoute >
                 <PortfolioPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/portfolio/add"
+            element={
+              <ProtectedRoute >
+                <AddPortfolioPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/portfolio/edit/:id"
+            element={
+              <ProtectedRoute >
+                <EditPortfolioPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/portfolio/:id"
+            element={
+              <ProtectedRoute >
+                <PortfolioDetailPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Testimoni Routes */}
+          <Route
+            path="/testimoni"
+            element={
+              <ProtectedRoute >
+                <TestimoniPage />
               </ProtectedRoute>
             }
           />

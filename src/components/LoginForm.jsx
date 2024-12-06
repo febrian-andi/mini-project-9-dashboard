@@ -12,12 +12,7 @@ const LoginForm = () => {
   });
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isSuccess, error } = useSelector((state) => state.auth);
-  useEffect(() => {
-    if (isSuccess) {
-      navigate("/");
-    }
-  }, [isSuccess]);
+  const { error, loading } = useSelector((state) => state.auth);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -30,6 +25,7 @@ const LoginForm = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     dispatch(login(loginForm));
+    navigate("/");
   };
 
   return (
@@ -76,9 +72,15 @@ const LoginForm = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600"
+            className={`w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 ${
+              loading && "cursor-not-allowed opacity-50"
+            }`}
           >
-            Login
+            {loading ? (
+              <div className="w-5 h-5 mx-auto border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+            ) : (
+              "Login"
+            )}
           </button>
         </form>
       </div>

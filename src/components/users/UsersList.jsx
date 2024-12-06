@@ -7,13 +7,18 @@ function UsersList() {
   const { data: users, loading, error } = useFetchData("/users");
 
   if (loading) {
-    return <div className="text-center">Loading...</div>;
+    return (
+      <div className="flex space-x-2 justify-center">
+        <div className="w-5 h-5 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <p>Loading...</p>
+      </div>
+    );
   }
 
   if (error) {
     return <div className="text-center text-red-500">Error: {error}</div>;
   }
-  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">

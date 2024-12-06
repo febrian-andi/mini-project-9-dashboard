@@ -2,12 +2,12 @@ import React from "react";
 import UserForm from "../../components/users/UserForm";
 import Layout from "../../components/Layout";
 
-function AddUsersPage() {
+function EditUserPage() {
   return (
     <Layout>
-      <UserForm isEdit={false} />
+      <UserForm isEdit={true} />
     </Layout>
   );
 }
 
-export default AddUsersPage;
+export default EditUserPage;

@@ -1,40 +1,38 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useFormInput } from "../../hooks/useFormInput";
 import { usePostData } from "../../hooks/usePostData";
 import { useFetchData } from "../../hooks/useFetchData";
 import { useUpdateData } from "../../hooks/useUpdateData";
 
-function UserForm({ isEdit = false }) {
+function BlogForm({ isEdit = false }) {
   const navigate = useNavigate();
   const id = useParams().id;
-  const [confirm_password, setConfirmPassword] = useState("");
   const [image, setImage] = useState(null);
-
-  const { postData, loading: loadingPostData } = usePostData("/users");
-  const { updateData, loading: loadingUpdateData } = useUpdateData(`/users/${id}`);
+  const { postData, loading: loadingPostData } = usePostData("/blogs");
+  const { updateData, loading: loadingUpdateData } = useUpdateData(
+    `/blogs/${id}`
+  );
   const { data, loading: loadingFetchData } = isEdit
-    ? useFetchData(`/users/${id}`)
+    ? useFetchData(`/blogs/${id}`)
     : { data: null, loading: false };
+
   const { values, setValues, handleChange } = useFormInput({
-    name: "",
-    username: "",
-    email: "",
-    title: "Admin",
-    linkedin_url: "",
-    password: "",
-    ig_url: "",
+    title: "",
+    content: "",
+    meta_title: "",
+    meta_desc: "",
   });
 
   useEffect(() => {
     if (isEdit && data) {
       setValues({
-        name: data.user.name || "",
-        username: data.user.username || "",
-        email: data.user.email || "",
-        linkedin_url: data.user.linkedin_url || "",
-        ig_url: data.user.ig_url || "",
-        password: "",
+        title: data.data.title || "",
+        content: data.data.content || "",
+        meta_title: data.data.meta_title || "",
+        meta_desc: data.data.meta_desc || "",
+        published: data.data.published || false,
       });
     }
   }, [isEdit, data]);
@@ -46,48 +44,48 @@ function UserForm({ isEdit = false }) {
       if (validTypes.includes(file.type)) {
         setImage(file);
       } else {
-        alert("Please upload a valid image (jpeg, png).");
+        alert("Please upload a valid image (jpeg, png,).");
       }
     }
   };
 
+  const handleChangeRadio = (e) => {
+    const { value } = e.target;
+    setValues((prevValues) => ({
+      ...prevValues,
+      published: value === "true",
+    }));
+  };
+  
+
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    console.log(values);
     if (!image) {
       alert("Please upload an image.");
       return;
     }
 
-    if (!isEdit && values.password !== confirm_password) {
-      alert("Password and Confirm Password do not match");
-      return;
-    }
-
     const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("username", values.username);
-    formData.append("email", values.email);
     formData.append("title", values.title);
-    formData.append("linkedin_url", values.linkedin_url);
-    formData.append("ig_url", values.ig_url);
-    if (!isEdit) {
-      formData.append("password", values.password);
+    formData.append("content", values.content);
+    formData.append("meta_title", values.meta_title);
+    formData.append("meta_desc", values.meta_desc);
+    if (isEdit && values.published === true) {
+      formData.append("published", values.published);
     }
-    formData.append("photo", image);
-
-    console.log(formData);
+    formData.append("banner", image);
 
     if (isEdit) {
-      updateData(`/users/${id}`, formData, () => {
-        navigate("/users");
+      updateData(formData, () => {
+        navigate("/blogs");
       });
       return;
     } else {
       postData(
         formData,
         () => {
-          navigate("/users");
+          navigate("/blogs");
         },
         (errors) => {
           alert(Object.values(errors).join("\n"));
@@ -99,7 +97,7 @@ function UserForm({ isEdit = false }) {
   return (
     <div className="rounded w-full md:w-96 mx-auto mb-4">
       <h1 className="text-2xl font-bold mb-4">
-        {isEdit ? "Edit User" : "Add New User"}
+        {isEdit ? "Edit Blog" : "Add New Blog"}
       </h1>
       {loadingFetchData ? (
         <div className="flex space-x-2 justify-center">
@@ -109,7 +107,7 @@ function UserForm({ isEdit = false }) {
       ) : (
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700">Upload Photo Profile</label>
+            <label className="block text-gray-700">Upload Banner Image</label>
             <input
               type="file"
               accept="image/*"
@@ -120,89 +118,75 @@ function UserForm({ isEdit = false }) {
           <div className="mb-4">
             <input
               type="text"
-              name="name"
-              value={values.name}
+              name="title"
+              value={values.title}
               onChange={handleChange}
               className="border border-gray-300 p-2 w-full"
-              placeholder="Name"
+              placeholder="Title"
               required
             />
           </div>
           <div className="mb-4">
             <input
               type="text"
-              name="username"
-              value={values.username}
+              name="content"
+              value={values.content}
               onChange={handleChange}
               className="border border-gray-300 p-2 w-full"
-              placeholder="Username"
+              placeholder="Content"
               required
             />
           </div>
           <div className="mb-4">
             <input
-              type="email"
-              name="email"
-              value={values.email}
+              type="text"
+              name="meta_title"
+              value={values.meta_title}
               onChange={handleChange}
               className="border border-gray-300 p-2 w-full"
-              placeholder="Email"
+              placeholder="Meta Title"
               required
             />
           </div>
           <div className="mb-4">
             <input
-              type="url"
-              name="linkedin_url"
-              value={values.linkedin_url}
+              type="text"
+              name="meta_desc"
+              value={values.meta_desc}
               onChange={handleChange}
               className="border border-gray-300 p-2 w-full"
-              placeholder="LinkedIn URL"
+              placeholder="Meta Description"
               required
             />
           </div>
-          <div className="mb-4">
-            <input
-              type="url"
-              name="ig_url"
-              value={values.ig_url}
-              onChange={handleChange}
-              className="border border-gray-300 p-2 w-full"
-              placeholder="Instagram URL"
-              required
-            />
-          </div>
-          {!isEdit && (
-            <>
-              <div className="mb-4">
+          {isEdit && (
+            <div className="mb-4 flex flex-row space-x-4 items-center">
+              <label className="radio-label">Status :</label>
                 <input
-                  type="password"
-                  name="password"
-                  value={values.password}
-                  onChange={handleChange}
-                  className="border border-gray-300 p-2 w-full"
-                  placeholder="Password"
-                  required
+                  type="radio"
+                  name="published"
+                  value="true"
+                  onChange={handleChangeRadio}
+                  checked={values.published === true}
                 />
-              </div>
-              <div className="mb-4">
+                <span className="text-green-500 font-bold">Published</span>
                 <input
-                  type="password"
-                  name="confirm_password"
-                  value={confirm_password}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="border border-gray-300 p-2 w-full"
-                  placeholder="Confirm Password"
-                  required
+                  type="radio"
+                  name="published"
+                  value="false"
+                  checked={values.published === false}
+                  onChange={handleChangeRadio}
                 />
-              </div>
-            </>
+                <span className="text-red-500 font-bold">Unpublished</span>
+            </div>
           )}
           <div className="flex justify-end gap-x-2">
             <Link
-              to="/users"
+              to="/blogs"
               className={`border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:text-white hover:bg-red-600 ml-4 ${
-                loadingPostData || loadingUpdateData ? "opacity-50 cursor-not-allowed" : ""
+                loadingPostData || loadingUpdateData
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
               disabled={loadingPostData || loadingUpdateData}
             >
@@ -211,7 +195,9 @@ function UserForm({ isEdit = false }) {
             <button
               type="submit"
               className={`bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-[80px] ${
-                loadingPostData || loadingUpdateData ? "opacity-50 cursor-not-allowed" : ""
+                loadingPostData || loadingUpdateData
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
               disabled={loadingPostData || loadingUpdateData}
             >
@@ -228,4 +214,4 @@ function UserForm({ isEdit = false }) {
   );
 }
 
-export default UserForm;
+export default BlogForm;
