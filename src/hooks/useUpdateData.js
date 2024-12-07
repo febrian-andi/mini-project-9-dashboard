@@ -9,11 +9,9 @@ export const useUpdateData = (url) => {
   const [loading, setLoading] = useState(false);
 
   const updateData = async (data, onSuccess, onError) => {
-    for (let key in data) {
-      if (data[key] === "") {
-        delete data[key];
-      }
-    }
+    for (let [key, value] of data.entries()) {
+      console.log(`${key}: ${value}`);
+  }
     try {
       setLoading(true);
       const response = await axios.put(`${API_URL}${url}`, data, {
@@ -21,13 +19,11 @@ export const useUpdateData = (url) => {
           "Authorization": `Bearer ${token}`,
         },
       });
-      console.log(response.data);
       if (typeof onSuccess === "function") {
         onSuccess();
       }
     } catch (error) {
-        console.log(error);
-        onError(error.response.data.message || "Something went wrong!");
+        onError();
     } finally {
       setLoading(false);
     }

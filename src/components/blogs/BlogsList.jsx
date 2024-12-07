@@ -23,9 +23,10 @@ function BlogsList() {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-gray-800">Blogs Management</h1>
-        <Link 
+        <Link
           to="/blogs/add"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+        >
           Create New Blog
         </Link>
       </div>
@@ -41,6 +42,13 @@ function BlogsList() {
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
+            {blogs.data.length === 0 && (
+              <tr>
+                <td colSpan="5" className="text-center py-4">
+                  No data found
+                </td>
+              </tr>
+            )}
             {blogs.data.map((blog, index) => (
               <BlogsRow key={blog.id} index={index} blog={blog} />
             ))}

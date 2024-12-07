@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { useFetchData } from "../../hooks/useFetchData";
-import UsersRow from "./UsersRow";
+import React from "react";
 import { Link } from "react-router-dom";
+import { useFetchData } from "../../hooks/useFetchData";
+import { TestimonialRow } from "./TestimonialRow";
 
-function UsersList() {
-  const { data: users, loading, error } = useFetchData("/users");
+function TestimonialList() {
+  const { data: testimonial, loading, error } = useFetchData("/testimonial");
 
   if (loading) {
     return (
@@ -22,34 +22,43 @@ function UsersList() {
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-gray-800">Users Management</h1>
+        <h1 className="text-3xl font-bold text-gray-800">
+          Testimonial Management
+        </h1>
         <Link
-          to="/users/add"
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+          to="/testimonial/add"
+          className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600"
         >
-          Add New User
+          Add Testimonial
         </Link>
       </div>
+
       <div className="overflow-x-auto">
         <table className="w-full bg-white">
           <thead>
             <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
               <th className="py-3 px-6 text-left">#</th>
+              <th className="py-3 px-6 text-left">Photo</th>
               <th className="py-3 px-6 text-left">Name</th>
-              <th className="py-3 px-6 text-left">Email</th>
+              <th className="py-3 px-6 text-left">Tittle</th>
+              <th className="py-3 px-6 text-left">Message</th>
               <th className="py-3 px-6 text-center">Actions</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
-            {users.data.length === 0 && (
+            {testimonial.data.length === 0 && (
               <tr>
-                <td colSpan="4" className="text-center py-4">
+                <td colSpan="6" className="text-center py-4">
                   No data found
                 </td>
               </tr>
             )}
-            {users.data.map((user, index) => (
-              <UsersRow key={user.id} user={user} index={index} />
+            {testimonial.data.map((item, index) => (
+              <TestimonialRow
+                key={item.id}
+                index={index}
+                testimonial={item}
+              />
             ))}
           </tbody>
         </table>
@@ -58,4 +67,4 @@ function UsersList() {
   );
 }
 
-export default UsersList;
+export default TestimonialList;

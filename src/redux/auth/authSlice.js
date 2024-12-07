@@ -20,7 +20,6 @@ export const login = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      console.log(error.response.data);
       return thunkAPI.rejectWithValue(error.response?.data?.message);
     }
   }
@@ -36,6 +35,18 @@ export const logout = createAsyncThunk("auth/logout", async (_, thunkAPI) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+    return response.data;
+  } catch (error) {
+    return thunkAPI.rejectWithValue(error.response?.data?.message);
+  }
+});
+
+export const getProfile = createAsyncThunk("auth/profile", async (_, thunkAPI) => {
+  const { token } = thunkAPI.getState().auth;
+  try {
+    const response = await axios.get(`${API_URL}/auth/profile`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
     return response.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message);
@@ -69,6 +80,7 @@ const authSlice = createSlice({
         state.loading = false;
         state.isSuccess = true;
         state.token = action.payload.token;
+        state.user = action.payload.user;
         const now = Date.now();
         const expiryDuration = action.payload.remember_me
           ? 7 * 24 * 60 * 60 * 1000
@@ -79,13 +91,30 @@ const authSlice = createSlice({
         state.loading = false;
         state.error = action.payload || "Something went wrong 11";
       })
+
+      // extraReducers for profile
+      .addCase(getProfile.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+        state.isSuccess = false;
+      })
+      .addCase(getProfile.fulfilled, (state, action) => {
+        state.loading = false;
+        state.isSuccess = true;
+        state.user = action.payload.user;
+      })
+      .addCase(getProfile.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Something went wrong";
+      })
+
+      // extraReducers for logout
       .addCase(logout.pending, (state) => {
         state.loading = true;
         state.error = null;
         state.isSuccess = false;
         state.isLoggingOut = true;
       })
-      // extraReducers for refreshToken
       .addCase(logout.fulfilled, (state) => {
         state.token = null;
         state.user = null;

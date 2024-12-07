@@ -6,31 +6,33 @@ import { usePostData } from "../../hooks/usePostData";
 import { useFetchData } from "../../hooks/useFetchData";
 import { useUpdateData } from "../../hooks/useUpdateData";
 
-function PortfolioForm({ isEdit = false }) {
+function TestimonialForm({ isEdit = false }) {
   const navigate = useNavigate();
   const id = useParams().id;
   const [image, setImage] = useState(null);
 
-  const { postData, loading: loadingPostData } = usePostData("/portfolio");
+  const { postData, loading: loadingPostData } = usePostData("/testimonial");
 
   const { updateData, loading: loadingUpdateData } = useUpdateData(
-    `/portfolio/${id}`
+    `/testimonial/${id}`
   );
 
   const { data, loading: loadingFetchData } = isEdit
-    ? useFetchData(`/portfolio/${id}`)
+    ? useFetchData(`/testimonial/${id}`)
     : { data: null, loading: false };
 
   const { values, setValues, handleChange } = useFormInput({
+    name: "",
     title: "",
-    content: "",
+    message: "",
   });
 
   useEffect(() => {
     if (isEdit && data) {
       setValues({
+        name: data.data.name || "",
         title: data.data.title || "",
-        content: data.data.content || "",
+        message: data.data.message || "",
       });
     }
   }, [isEdit, data]);
@@ -56,20 +58,21 @@ function PortfolioForm({ isEdit = false }) {
     }
 
     const formData = new FormData();
+    formData.append("name", values.name);
     formData.append("title", values.title);
-    formData.append("content", values.content);
-    formData.append("banner", image);
+    formData.append("message", values.message);
+    formData.append("foto_profile", image);
 
     if (isEdit) {
       updateData( formData, () => {
-        navigate("/portfolio");
+        navigate("/testimonial");
       });
       return;
     } else {
       postData(
         formData,
         () => {
-          navigate("/portfolio");
+          navigate("/testimonial");
         },
         (errors) => {
           alert(Object.values(errors).join("\n"));
@@ -81,7 +84,7 @@ function PortfolioForm({ isEdit = false }) {
   return (
     <div className="rounded w-full md:w-96 mx-auto mb-4">
       <h1 className="text-2xl font-bold mb-4">
-        {isEdit ? "Edit Portfolio" : "Add New Portfolio"}
+        {isEdit ? "Edit testimonial" : "Add New testimonial"}
       </h1>
       {loadingFetchData ? (
         <div className="flex space-x-2 justify-center">
@@ -91,12 +94,23 @@ function PortfolioForm({ isEdit = false }) {
       ) : (
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-gray-700">Upload Banner Image</label>
+            <label className="block text-gray-700">Upload Photo Profile</label>
             <input
               type="file"
               accept="image/*"
               onChange={handleChangeImage}
               className="border border-gray-300 p-2 w-full"
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="text"
+              name="name"
+              value={values.name}
+              onChange={handleChange}
+              className="border border-gray-300 p-2 w-full"
+              placeholder="Name"
+              required
             />
           </div>
           <div className="mb-4">
@@ -112,17 +126,17 @@ function PortfolioForm({ isEdit = false }) {
           </div>
           <div className="mb-4">
             <textarea
-              name="content"
-              value={values.content}
+              name="message"
+              value={values.message}
               onChange={handleChange}
               className="border border-gray-300 p-2 w-full h-[150px]"
-              placeholder="Description"
+              placeholder="Message (minimum 10 characters)"
               required
             />
           </div>
           <div className="flex justify-end gap-x-2">
             <Link
-              to="/portfolio"
+              to="/testimonial"
               className={`border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:text-white hover:bg-red-600 ml-4 ${
                 loadingPostData || loadingUpdateData ? "opacity-50 cursor-not-allowed" : ""
               }`}
@@ -150,4 +164,4 @@ function PortfolioForm({ isEdit = false }) {
   );
 }
 
-export default PortfolioForm;
+export default TestimonialForm;

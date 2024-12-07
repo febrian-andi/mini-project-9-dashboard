@@ -9,13 +9,13 @@ const useTokenManager = () => {
   useEffect(() => {
     if (!token || !expiry) return;
 
-    const timeRemaining = expiry - Date.now();
-    if (timeRemaining <= 0) {
-      dispatch(logout());
-    } else {
-      const timer = setTimeout(() => dispatch(logout()), timeRemaining);
-      return () => clearTimeout(timer);
-    }
+    const timer = setTimeout(() => {
+      if (Date.now() >= expiry) {
+        dispatch(logout());
+      }
+    }, expiry - Date.now());
+
+    return () => clearTimeout(timer);
   }, [token, expiry, dispatch]);
 };
 

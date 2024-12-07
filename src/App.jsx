@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -6,7 +6,9 @@ import {
   useLocation,
   Navigate,
 } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { getProfile } from "./redux/auth/authSlice";
+
 import Navbar from "./components/Navbar";
 import LoginPage from "./pages/LoginPage";
 import HomePage from "./pages/HomePage";
@@ -18,15 +20,20 @@ import AddUsersPage from "./pages/users/AddUsersPage";
 import EditUserPage from "./pages/users/EditUsersPage";
 
 import BlogsPage from "./pages/blogs/BlogsPage";
+import AddBlogsPage from "./pages/blogs/AddBlogsPage";
+import EditBlogsPage from "./pages/blogs/EditBlogsPage";
+import BlogsDetailPage from "./pages/blogs/BlogsDetailPage";
 
 import PortfolioPage from "./pages/portfolio/PortfolioPage";
 import AddPortfolioPage from "./pages/portfolio/AddPortfolioPage";
 import EditPortfolioPage from "./pages/portfolio/EditPortfolioPage";
 import PortfolioDetailPage from "./pages/portfolio/PortfolioDetailPage";
-import AddBlogsPage from "./pages/blogs/AddBlogsPage";
-import EditBlogsPage from "./pages/blogs/EditBlogsPage";
-import TestimoniPage from "./pages/testimoni/TestimoniPage";
-import BlogsDetailPage from "./pages/blogs/BlogsDetailPage";
+
+import TestimonialPage from "./pages/testimonial/TestimonialPage";
+import AddTestimonialPage from "./pages/testimonial/AddTestomialPage";
+import EditTestimonialPage from "./pages/testimonial/EditTestomialPage";
+import TestimonialDetailPage from "./pages/testimonial/TestimonialDetailPage";
+import UsersDetailPage from "./pages/users/UsersDetailPage";
 
 function AppComponent() {
   useTokenManager();
@@ -34,6 +41,13 @@ function AppComponent() {
   const location = useLocation();
   const isLoginPage = location.pathname === "/login";
   const { token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (token) {
+      dispatch(getProfile());
+    }
+  }, [dispatch, token]);
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -89,6 +103,14 @@ function AppComponent() {
             element={
               <ProtectedRoute >
                 <EditUserPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/users/:id"
+            element={
+              <ProtectedRoute >
+                <UsersDetailPage />
               </ProtectedRoute>
             }
           />
@@ -163,10 +185,34 @@ function AppComponent() {
 
           {/* Testimoni Routes */}
           <Route
-            path="/testimoni"
+            path="/testimonial"
             element={
               <ProtectedRoute >
-                <TestimoniPage />
+                <TestimonialPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/testimonial/add"
+            element={
+              <ProtectedRoute >
+                <AddTestimonialPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/testimonial/edit/:id"
+            element={
+              <ProtectedRoute >
+                <EditTestimonialPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/testimonial/:id"
+            element={
+              <ProtectedRoute >
+                <TestimonialDetailPage />
               </ProtectedRoute>
             }
           />

@@ -20,38 +20,49 @@ function PortfolioList() {
   }
 
   return (
-      <div>
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Portfolio Management
-          </h1>
-          <Link
-            to="/portfolio/add"
-            className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600"
-          >
-            Add Portfolio
-          </Link>
-        </div>
-
-        <div className="overflow-x-auto">
-          <table className="w-full bg-white">
-            <thead>
-              <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                <th className="py-3 px-6 text-left">#</th>
-                <th className="py-3 px-6 text-left">Date</th>
-                <th className="py-3 px-6 text-left">Title</th>
-                <th className="py-3 px-6 text-left">Description</th>
-                <th className="py-3 px-6 text-center">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-gray-600 text-sm font-light">
-              {portfolios.data.map((portfolio, index) => (
-                <PortfolioRow key={portfolio.id} index={index} portfolio={portfolio} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+    <div>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-gray-800">
+          Portfolio Management
+        </h1>
+        <Link
+          to="/portfolio/add"
+          className="bg-indigo-500 text-white px-4 py-2 rounded-lg hover:bg-indigo-600"
+        >
+          Add Portfolio
+        </Link>
       </div>
+
+      <div className="overflow-x-auto">
+        <table className="w-full bg-white">
+          <thead>
+            <tr className="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+              <th className="py-3 px-6 text-left">#</th>
+              <th className="py-3 px-6 text-left">Date</th>
+              <th className="py-3 px-6 text-left">Title</th>
+              <th className="py-3 px-6 text-left">Description</th>
+              <th className="py-3 px-6 text-center">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="text-gray-600 text-sm font-light">
+            {portfolios.data.length === 0 && (
+              <tr>
+                <td colSpan="5" className="text-center py-4">
+                  No data found
+                </td>
+              </tr>
+            )}
+            {portfolios.data.map((portfolio, index) => (
+              <PortfolioRow
+                key={portfolio.id}
+                index={index}
+                portfolio={portfolio}
+              />
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 

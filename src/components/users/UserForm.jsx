@@ -12,7 +12,9 @@ function UserForm({ isEdit = false }) {
   const [image, setImage] = useState(null);
 
   const { postData, loading: loadingPostData } = usePostData("/users");
-  const { updateData, loading: loadingUpdateData } = useUpdateData(`/users/${id}`);
+  const { updateData, loading: loadingUpdateData } = useUpdateData(
+    `/users/${id}`
+  );
   const { data, loading: loadingFetchData } = isEdit
     ? useFetchData(`/users/${id}`)
     : { data: null, loading: false };
@@ -34,7 +36,6 @@ function UserForm({ isEdit = false }) {
         email: data.user.email || "",
         linkedin_url: data.user.linkedin_url || "",
         ig_url: data.user.ig_url || "",
-        password: "",
       });
     }
   }, [isEdit, data]);
@@ -54,12 +55,12 @@ function UserForm({ isEdit = false }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!image) {
+    if (!isEdit && !image) {
       alert("Please upload an image.");
       return;
     }
 
-    if (!isEdit && values.password !== confirm_password) {
+    if (values.password !== confirm_password) {
       alert("Password and Confirm Password do not match");
       return;
     }
@@ -71,15 +72,13 @@ function UserForm({ isEdit = false }) {
     formData.append("title", values.title);
     formData.append("linkedin_url", values.linkedin_url);
     formData.append("ig_url", values.ig_url);
-    if (!isEdit) {
-      formData.append("password", values.password);
-    }
+    formData.append("password", values.password);
     formData.append("photo", image);
 
     console.log(formData);
 
     if (isEdit) {
-      updateData(`/users/${id}`, formData, () => {
+      updateData(formData, () => {
         navigate("/users");
       });
       return;
@@ -90,7 +89,7 @@ function UserForm({ isEdit = false }) {
           navigate("/users");
         },
         (errors) => {
-          alert(Object.values(errors).join("\n"));
+          alert(errors);
         }
       );
     }
@@ -172,37 +171,35 @@ function UserForm({ isEdit = false }) {
               required
             />
           </div>
-          {!isEdit && (
-            <>
-              <div className="mb-4">
-                <input
-                  type="password"
-                  name="password"
-                  value={values.password}
-                  onChange={handleChange}
-                  className="border border-gray-300 p-2 w-full"
-                  placeholder="Password"
-                  required
-                />
-              </div>
-              <div className="mb-4">
-                <input
-                  type="password"
-                  name="confirm_password"
-                  value={confirm_password}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="border border-gray-300 p-2 w-full"
-                  placeholder="Confirm Password"
-                  required
-                />
-              </div>
-            </>
-          )}
+          <div className="mb-4">
+            <input
+              type="password"
+              name="password"
+              value={values.password}
+              onChange={handleChange}
+              className="border border-gray-300 p-2 w-full"
+              placeholder="Password"
+              required
+            />
+          </div>
+          <div className="mb-4">
+            <input
+              type="password"
+              name="confirm_password"
+              value={confirm_password}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="border border-gray-300 p-2 w-full"
+              placeholder="Confirm Password"
+              required
+            />
+          </div>
           <div className="flex justify-end gap-x-2">
             <Link
               to="/users"
               className={`border border-red-500 text-red-500 px-4 py-2 rounded-lg hover:text-white hover:bg-red-600 ml-4 ${
-                loadingPostData || loadingUpdateData ? "opacity-50 cursor-not-allowed" : ""
+                loadingPostData || loadingUpdateData
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
               disabled={loadingPostData || loadingUpdateData}
             >
@@ -211,7 +208,9 @@ function UserForm({ isEdit = false }) {
             <button
               type="submit"
               className={`bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 w-[80px] ${
-                loadingPostData || loadingUpdateData ? "opacity-50 cursor-not-allowed" : ""
+                loadingPostData || loadingUpdateData
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
               disabled={loadingPostData || loadingUpdateData}
             >
