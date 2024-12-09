@@ -18,6 +18,7 @@ import useTokenManager from "./hooks/UseTokenManager";
 import UsersPage from "./pages/users/UsersPage";
 import AddUsersPage from "./pages/users/AddUsersPage";
 import EditUserPage from "./pages/users/EditUsersPage";
+import UsersDetailPage from "./pages/users/UsersDetailPage";
 
 import BlogsPage from "./pages/blogs/BlogsPage";
 import AddBlogsPage from "./pages/blogs/AddBlogsPage";
@@ -30,10 +31,11 @@ import EditPortfolioPage from "./pages/portfolio/EditPortfolioPage";
 import PortfolioDetailPage from "./pages/portfolio/PortfolioDetailPage";
 
 import TestimonialPage from "./pages/testimonial/TestimonialPage";
-import AddTestimonialPage from "./pages/testimonial/AddTestomialPage";
-import EditTestimonialPage from "./pages/testimonial/EditTestomialPage";
 import TestimonialDetailPage from "./pages/testimonial/TestimonialDetailPage";
-import UsersDetailPage from "./pages/users/UsersDetailPage";
+import EditTestimonialPage from "./pages/testimonial/EditTestomialPage";
+import AddTestimonialPage from "./pages/testimonial/AddTestomialPage";
+
+import MessagePage from "./pages/message/MessagePage";
 
 function AppComponent() {
   useTokenManager();
@@ -196,7 +198,7 @@ function AppComponent() {
             path="/testimonial/add"
             element={
               <ProtectedRoute >
-                <AddTestimonialPage />
+                <AddTestimonialPage/>
               </ProtectedRoute>
             }
           />
@@ -204,7 +206,7 @@ function AppComponent() {
             path="/testimonial/edit/:id"
             element={
               <ProtectedRoute >
-                <EditTestimonialPage />
+                <EditTestimonialPage/>
               </ProtectedRoute>
             }
           />
@@ -213,6 +215,16 @@ function AppComponent() {
             element={
               <ProtectedRoute >
                 <TestimonialDetailPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Message Routes */}
+          <Route
+            path="/message"
+            element={
+              <ProtectedRoute >
+                <MessagePage />
               </ProtectedRoute>
             }
           />

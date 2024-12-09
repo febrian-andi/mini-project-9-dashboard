@@ -9,6 +9,7 @@ import {
   XMarkIcon,
   ArrowLeftEndOnRectangleIcon,
   ChatBubbleLeftEllipsisIcon,
+  ChatBubbleLeftIcon,
 } from "@heroicons/react/24/solid";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../redux/auth/authSlice";
@@ -51,6 +52,11 @@ const Navbar = () => {
       name: "Testimonial",
       icon: <ChatBubbleLeftEllipsisIcon className="w-6 h-6" />,
       path: "/testimonial",
+    },
+    {
+      name: "Message",
+      icon: <ChatBubbleLeftIcon className="w-6 h-6" />,
+      path: "/message",
     },
   ];
 
